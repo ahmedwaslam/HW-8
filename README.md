@@ -1,5 +1,6 @@
 # HW-7
 
+````
 load("/cloud/project/NHIS_2014.RData")
 > data_use1$earn_lastyr <- as.factor(data_use1$ERNYR_P)
 > 
@@ -116,3 +117,201 @@ Number of Fisher Scoring iterations: 6
 > dat_for_analysis_sub <- data.frame(dat2$NOTCOV,dat2$AGE_P,dat2$female,dat2$AfAm,dat2$Asian,dat2$RaceOther,dat2$Hispanic,dat2$educ_hs,dat2$educ_smcoll,dat2$educ_as,dat2$educ_bach,dat2$educ_adv,dat2$married,dat2$widowed,dat2$divorc_sep,d_region[,2:4],d_region_born[,2:12]) 
 > 
 > names(dat_for_analysis_sub) <- c("NOTCOV","Age", "female", "AfAm","Asian","RaceOther","Hispanic","educ_hs","educ_smcoll","educ_as","educ_bach","educ_adv","married","widowed","divorc_sep","Region.Midwest","Region.South", "Region.West","born.Mex.CentAm.Carib","born.S.Am","born.Eur", "born.f.USSR", "born.Africa", "born.MidE","born.India.subc", "born.Asia","born.SE.Asia","born.elsewhere","born.unknown")
+
+summary(model_OLS1)
+
+Call:
+lm(formula = sobj$formula, data = sobj$data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.60732 -0.17995 -0.09605 -0.00931  1.11770 
+
+Coefficients:
+                         Estimate Std. Error t value
+(Intercept)             0.5574261  0.0642340   8.678
+Age                    -0.0396285  0.0032580 -12.163
+female1                -0.0144371  0.0027148  -5.318
+AfAm1                  -0.0191034  0.0041975  -4.551
+Asian1                 -0.0158563  0.0087896  -1.804
+RaceOther1              0.0421389  0.0100458   4.195
+Hispanic1               0.0193547  0.0047790   4.050
+educ_hs1               -0.0002775  0.0043536  -0.064
+educ_smcoll1           -0.0315379  0.0046966  -6.715
+educ_as1               -0.0267065  0.0054248  -4.923
+educ_bach1             -0.0554831  0.0048984 -11.327
+educ_adv1              -0.0656082  0.0057682 -11.374
+married1               -0.0295291  0.0034983  -8.441
+widowed1               -0.0098762  0.0089221  -1.107
+divorc_sep1            -0.0018255  0.0051154  -0.357
+Region.Midwest1         0.0110894  0.0044993   2.465
+Region.South1           0.0363097  0.0040484   8.969
+Region.West1            0.0129634  0.0042273   3.067
+born.Mex.CentAm.Carib1  0.1060590  0.0058450  18.145
+born.S.Am1              0.0398128  0.0132271   3.010
+born.Eur1               0.0161050  0.0112666   1.429
+born.f.USSR1            0.0726396  0.0268625   2.704
+born.Africa1            0.0635681  0.0152544   4.167
+born.MidE1              0.0528245  0.0207550   2.545
+born.India.subc1        0.0508833  0.0144997   3.509
+born.Asia1              0.0368217  0.0137450   2.679
+born.SE.Asia1           0.0413706  0.0121460   3.406
+born.elsewhere1         0.0125449  0.0190534   0.658
+born.unknown1           0.0333367  0.0259793   1.283
+                       Pr(>|t|)    
+(Intercept)             < 2e-16 ***
+Age                     < 2e-16 ***
+female1                1.06e-07 ***
+AfAm1                  5.38e-06 ***
+Asian1                 0.071252 .  
+RaceOther1             2.75e-05 ***
+Hispanic1              5.15e-05 ***
+educ_hs1               0.949186    
+educ_smcoll1           1.94e-11 ***
+educ_as1               8.61e-07 ***
+educ_bach1              < 2e-16 ***
+educ_adv1               < 2e-16 ***
+married1                < 2e-16 ***
+widowed1               0.268334    
+divorc_sep1            0.721194    
+Region.Midwest1        0.013723 *  
+Region.South1           < 2e-16 ***
+Region.West1           0.002169 ** 
+born.Mex.CentAm.Carib1  < 2e-16 ***
+born.S.Am1             0.002617 ** 
+born.Eur1              0.152896    
+born.f.USSR1           0.006856 ** 
+born.Africa1           3.10e-05 ***
+born.MidE1             0.010933 *  
+born.India.subc1       0.000451 ***
+born.Asia1             0.007394 ** 
+born.SE.Asia1          0.000661 ***
+born.elsewhere1        0.510288    
+born.unknown1          0.199440    
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.3382 on 15840 degrees of freedom
+Multiple R-squared:  0.1195,	Adjusted R-squared:  0.118 
+F-statistic: 76.79 on 28 and 15840 DF,  p-value: < 2.2e-16
+
+summary(model_OLS1)
+
+> pred_vals_OLS <- suppressWarnings(predict(model_OLS1, s_dat_test))
+> 
+> pred_model_OLS1 <- (pred_vals_OLS > 0.45)
+> 
+> pred1OLStable <- table(pred = pred_model_OLS1, true = dat_test$NOTCOV)
+> 
+> pred1OLStable
+       true
+pred        0     1
+  FALSE 53304  8648
+  TRUE    600  1151
+  
+  goodolspred <- sum((prop.table(pred1OLStable)[1,1])+(prop.table(pred1OLStable)[2,2]))
+> 
+> model_logit1 <- glm(sobj$formula, family = binomial, data = sobj$data)
+> 
+> summary(model_logit1)
+
+Call:
+glm(formula = sobj$formula, family = binomial, data = sobj$data)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.6894  -0.5900  -0.4118  -0.2520   3.1371  
+
+Coefficients:
+                       Estimate Std. Error z value
+(Intercept)             1.44575    0.53384   2.708
+Age                    -0.36174    0.02999 -12.061
+female1                -0.12429    0.02388  -5.204
+AfAm1                  -0.12353    0.03711  -3.328
+Asian1                 -0.11368    0.08023  -1.417
+RaceOther1              0.27658    0.07286   3.796
+Hispanic1               0.13967    0.03768   3.707
+educ_hs1                0.02732    0.03222   0.848
+educ_smcoll1           -0.21846    0.03727  -5.862
+educ_as1               -0.18047    0.04535  -3.979
+educ_bach1             -0.54977    0.04779 -11.505
+educ_adv1              -0.89516    0.08050 -11.120
+married1               -0.23345    0.03015  -7.743
+widowed1               -0.05472    0.08773  -0.624
+divorc_sep1             0.03613    0.04319   0.836
+Region.Midwest1         0.11440    0.04444   2.574
+Region.South1           0.33384    0.03819   8.741
+Region.West1            0.14031    0.04022   3.488
+born.Mex.CentAm.Carib1  0.61318    0.04189  14.639
+born.S.Am1              0.37133    0.10013   3.708
+born.Eur1               0.16564    0.10977   1.509
+born.f.USSR1            0.67979    0.20268   3.354
+born.Africa1            0.54964    0.12071   4.553
+born.MidE1              0.53365    0.16845   3.168
+born.India.subc1        0.53581    0.12765   4.197
+born.Asia1              0.37627    0.12526   3.004
+born.SE.Asia1           0.37923    0.10844   3.497
+born.elsewhere1         0.13292    0.17891   0.743
+born.unknown1           0.32710    0.20333   1.609
+                       Pr(>|z|)    
+(Intercept)            0.006765 ** 
+Age                     < 2e-16 ***
+female1                1.95e-07 ***
+AfAm1                  0.000873 ***
+Asian1                 0.156476    
+RaceOther1             0.000147 ***
+Hispanic1              0.000210 ***
+educ_hs1               0.396536    
+educ_smcoll1           4.58e-09 ***
+educ_as1               6.92e-05 ***
+educ_bach1              < 2e-16 ***
+educ_adv1               < 2e-16 ***
+married1               9.72e-15 ***
+widowed1               0.532830    
+divorc_sep1            0.402927    
+Region.Midwest1        0.010039 *  
+Region.South1           < 2e-16 ***
+Region.West1           0.000486 ***
+born.Mex.CentAm.Carib1  < 2e-16 ***
+born.S.Am1             0.000209 ***
+born.Eur1              0.131292    
+born.f.USSR1           0.000797 ***
+born.Africa1           5.28e-06 ***
+born.MidE1             0.001535 ** 
+born.India.subc1       2.70e-05 ***
+born.Asia1             0.002665 ** 
+born.SE.Asia1          0.000470 ***
+born.elsewhere1        0.457496    
+born.unknown1          0.107674    
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 13587  on 15868  degrees of freedom
+Residual deviance: 11728  on 15840  degrees of freedom
+AIC: 11786
+
+Number of Fisher Scoring iterations: 6
+
+> pred_vals <- suppressWarnings(predict(model_logit1, s_dat_test, type = "response"))
+> 
+> pred_model_logit1 <- (pred_vals > 0.5)
+> 
+> pred1Logtable <- table(pred = pred_model_logit1, true = dat_test$NOTCOV)
+> 
+> pred1Logtable
+       true
+pred        0     1
+  FALSE 53268  8661
+  TRUE    636  1138
+
+goodlogpred <- sum((prop.table(pred1Logtable)[1,1])+(prop.table(pred1Logtable)[2,2]))
+
+
+
+````
+
+
